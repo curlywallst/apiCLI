@@ -7,14 +7,12 @@ class CLI
   def menu
     input = ""
     while input.downcase != "exit" do
+      puts ""
       puts "Type 'categories' to select a category of drinks, ....., or 'exit' to exit."
       input = gets.strip.downcase
       if input == "categories"
-        categories = CocktailAPI.getCategories
-
-        Category.all.each.with_index(1) do |value, index|
-          puts "#{index}. #{value.name}"
-        end
+        CocktailAPI.getCategories if Category.all == []
+        print_categories
         select_category
       end
     end
@@ -26,16 +24,43 @@ class CLI
     category = Category.all[input.to_i-1].name.gsub(" ","_")
     drinks = Cocktail.find_by_category(category)
     if drinks.length == 0
-      CocktailAPI.getDrinksByCategory(category)
-      drinks = Cocktail.find_by_category(category)
+      drinks = CocktailAPI.getDrinksByCategory(category)
     end
+    print_drinks_in_category(category)
+    while input != "menu"
+      puts "Type the number of the drink you would like to see, 'list' to see the list again or 'menu' to return to the main menu."
+      puts ""
+      input = gets.strip
+      if input == 'list'
+        print_drinks_in_category(category)
+      elsif input.to_i > 0 && input.to_i <= Cocktail.find_by_category(category).length
+        if Cocktail.find_by_category(category)[input.to_i-1].ingredients == []
+          drink = CocktailAPI.getDrinkDetails(Cocktail.find_by_category(category)[input.to_i-1].drink_id)
+        else
+          drink = Cocktail.find_by_category(category)[input.to_i-1]
+        end
+        print_drink(drink)
+        puts ""
+      elsif input != 'menu'
+        puts "Oops, I didn't understand that"        # puts "Type the number of the drink you would like to see, 'list' to see the list again or 'menu' to return to the main menu."
+      end
+    end
+  end
+
+  def print_categories
+    puts ""
+    Category.all.each.with_index(1) do |value, index|
+      puts "#{index}. #{value.name}"
+    end
+    puts ""
+  end
+
+  def print_drinks_in_category(category)
+    puts ""
     Cocktail.find_by_category(category).each.with_index(1) do |value, index|
       puts "#{index}. #{value.name}"
     end
-    puts "Type the number of the drink you would like to see or 'list' to see the list again."
-    input = gets.strip
-    drink = CocktailAPI.getDrinkDetails(drinks[input.to_i-1].drink_id)
-    print_drink(drink)
+    puts ""
   end
 
   def print_drink(drink)
@@ -49,7 +74,7 @@ class CLI
     puts "Ingredients:"
     puts ""
     drink.ingredients.each_with_index do |ingredient, index|
-      puts "#{drink.measures[index]}#{ingredient}"
+      puts "#{ingredient} - #{drink.measures[index]}"
     end
     puts ""
   end

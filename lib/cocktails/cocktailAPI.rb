@@ -28,8 +28,9 @@ class CocktailAPI
     drink.glass = drink_details["drinks"][0]["strGlass"]
     drink.instructions = drink_details["drinks"][0]["strInstructions"]
     drink_details["drinks"][0].keys.each do |i|
-      drink.ingredients << drink_details["drinks"][0][i] if (i.include? "Ingredient") && drink_details["drinks"][0][i] != "" && drink_details["drinks"][0][i] != " "
-      drink.measures << drink_details["drinks"][0][i] if (i.include? "Measure") && drink_details["drinks"][0][i] != "" && drink_details["drinks"][0][i] != " "
+      # binding.pry
+      drink.ingredients << drink_details["drinks"][0][i] if (i.include? "Ingredient") && drink_details["drinks"][0][i] != "" && drink_details["drinks"][0][i] != " " && drink_details["drinks"][0][i] != nil
+      drink.measures << drink_details["drinks"][0][i].gsub("\n", "") if (i.include? "Measure") && drink_details["drinks"][0][i] != "" && drink_details["drinks"][0][i] != " " && drink_details["drinks"][0][i] != nil
     end
     drink
   end
