@@ -8,13 +8,23 @@ class CocktailAPI
     end
   end
 
-  def self.getDrinksByCategory(category)
-    url = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=#{category}"
+  def self.getGlasses
+    url = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?g=list'
+    uri = URI(url)
+    response = Net::HTTP.get(uri)
+    categories = JSON.parse(response)["drinks"].each do |c|
+      Glass.new(name: c["strGlass"])
+    end
+  end
+
+  def self.getDrinksByGroup(group, group_type)
+    url = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?#{group[0]}=#{group_type}"
     uri = URI(url)
     response = Net::HTTP.get(uri)
     drinks = JSON.parse(response)["drinks"]
     drinks.each do |d|
-      cocktail = Cocktail.new(name: d["strDrink"], drink_id: d["idDrink"], category: category)
+      cocktail = Cocktail.new(name: d["strDrink"], drink_id: d["idDrink"])
+      cocktail.send("#{group}=", group_type)
     end
   end
 
@@ -28,7 +38,6 @@ class CocktailAPI
     drink.glass = drink_details["drinks"][0]["strGlass"]
     drink.instructions = drink_details["drinks"][0]["strInstructions"]
     drink_details["drinks"][0].keys.each do |i|
-      # binding.pry
       drink.ingredients << drink_details["drinks"][0][i] if (i.include? "Ingredient") && drink_details["drinks"][0][i] != "" && drink_details["drinks"][0][i] != " " && drink_details["drinks"][0][i] != nil
       drink.measures << drink_details["drinks"][0][i].gsub("\n", "") if (i.include? "Measure") && drink_details["drinks"][0][i] != "" && drink_details["drinks"][0][i] != " " && drink_details["drinks"][0][i] != nil
     end

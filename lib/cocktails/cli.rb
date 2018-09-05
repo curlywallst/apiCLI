@@ -8,36 +8,41 @@ class CLI
     input = ""
     while input.downcase != "exit" do
       puts ""
-      puts "Type 'categories' to select a category of drinks, ....., or 'exit' to exit."
+      puts "Type 'category' to select a category of drinks, 'glass' to select a type of glass, ....., or 'exit' to exit."
+      puts ""
       input = gets.strip.downcase
-      if input == "categories"
+      if input == "category"
         CocktailAPI.getCategories if Category.all == []
-        print_categories
-        select_category
+        print_selection(Category.all)
+        select_from_group("category", Category.all)
+      elsif input == "glass"
+        CocktailAPI.getGlasses if Glass.all == []
+        print_selection(Glass.all)
+        select_from_group("glass", Glass.all)
       end
     end
   end
 
-  def select_category
-    puts "Type the number of the category in which you would like to see drinks"
+  def select_from_group(main_group_type, group)
+    puts "Type the number of the #{main_group_type} from which you would like to select"
     input = gets.strip.downcase
-    category = Category.all[input.to_i-1].name.gsub(" ","_")
-    drinks = Cocktail.find_by_category(category)
+    drinks = Cocktail.find_by_group(main_group_type, group[input.to_i-1].name.gsub(" ","_"))
     if drinks.length == 0
-      drinks = CocktailAPI.getDrinksByCategory(category)
+      CocktailAPI.getDrinksByGroup(main_group_type, group[input.to_i-1].name.gsub(" ","_"))
+      drinks = Cocktail.find_by_group(main_group_type, group[input.to_i-1].name.gsub(" ","_"))
     end
-    print_drinks_in_category(category)
+    print_drinks_in_group(drinks)
     while input != "menu"
       puts "Type the number of the drink you would like to see, 'list' to see the list again or 'menu' to return to the main menu."
       puts ""
       input = gets.strip
       if input == 'list'
-        print_drinks_in_category(category)
-      elsif input.to_i > 0 && input.to_i <= Cocktail.find_by_category(category).length
-        if Cocktail.find_by_category(category)[input.to_i-1].ingredients == []
-          drink = CocktailAPI.getDrinkDetails(Cocktail.find_by_category(category)[input.to_i-1].drink_id)
+        print_drinks_in_group(drinks)
+      elsif input.to_i > 0 && input.to_i <= drinks.length
+        if drinks[input.to_i-1].ingredients == []
+          drink = CocktailAPI.getDrinkDetails(drinks[input.to_i-1].drink_id)
         else
-          drink = Cocktail.find_by_category(category)[input.to_i-1]
+          drink = drinks[input.to_i-1]
         end
         print_drink(drink)
         puts ""
@@ -47,17 +52,17 @@ class CLI
     end
   end
 
-  def print_categories
+  def print_selection(selected)
     puts ""
-    Category.all.each.with_index(1) do |value, index|
+    selected.each.with_index(1) do |value, index|
       puts "#{index}. #{value.name}"
     end
     puts ""
   end
 
-  def print_drinks_in_category(category)
+  def print_drinks_in_group(group)
     puts ""
-    Cocktail.find_by_category(category).each.with_index(1) do |value, index|
+    group.each.with_index(1) do |value, index|
       puts "#{index}. #{value.name}"
     end
     puts ""
