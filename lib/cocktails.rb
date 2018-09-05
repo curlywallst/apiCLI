@@ -1,6 +1,7 @@
 require 'pry'
 require 'HTTParty'
 require 'json'
+require 'colorize'
 
 require_relative './cocktails/cli'
 require_relative './cocktails/cocktail'

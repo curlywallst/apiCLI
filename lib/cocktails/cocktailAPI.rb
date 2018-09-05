@@ -14,7 +14,7 @@ class CocktailAPI
     response = Net::HTTP.get(uri)
     drinks = JSON.parse(response)["drinks"]
     drinks.each do |d|
-      cocktail = Cocktail.new(name: d["strDrink"], drink_id: d["idDrink"])
+      cocktail = Cocktail.new(name: d["strDrink"], drink_id: d["idDrink"], category: category)
     end
   end
 
@@ -22,7 +22,15 @@ class CocktailAPI
     url = "https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=#{id}"
     uri = URI(url)
     response = Net::HTTP.get(uri)
-    drink = JSON.parse(response)
-    binding.pry
+    drink_details = JSON.parse(response)
+    drink = Cocktail.find_by_id(drink_details["drinks"][0]["idDrink"])
+    drink.alcoholic = drink_details["drinks"][0]["strAlcoholic"]
+    drink.glass = drink_details["drinks"][0]["strGlass"]
+    drink.instructions = drink_details["drinks"][0]["strInstructions"]
+    drink_details["drinks"][0].keys.each do |i|
+      drink.ingredients << drink_details["drinks"][0][i] if (i.include? "Ingredient") && drink_details["drinks"][0][i] != "" && drink_details["drinks"][0][i] != " "
+      drink.measures << drink_details["drinks"][0][i] if (i.include? "Measure") && drink_details["drinks"][0][i] != "" && drink_details["drinks"][0][i] != " "
+    end
+    drink
   end
 end
