@@ -8,7 +8,7 @@ class CLI
     input = ""
     while input.downcase != "exit" do
       puts ""
-      puts "Type 'category' to select a category of drinks, 'glass' to select a type of glass, ....., or 'exit' to exit."
+      puts "Type 'category' to select by a category of drinks, 'glass' to select by a type of glass, 'ingredient' to select by an ingredient....., or 'exit' to exit."
       puts ""
       input = gets.strip.downcase
       if input == "category"
@@ -19,6 +19,10 @@ class CLI
         CocktailAPI.getGlasses if Glass.all == []
         print_selection(Glass.all)
         select_from_group("glass", Glass.all)
+      elsif input == "ingredient"
+        CocktailAPI.getIngredients if Ingredient.all == []
+        print_selection(Ingredient.all)
+        select_from_group("ingredient", Ingredient.all)
       end
     end
   end
@@ -26,6 +30,7 @@ class CLI
   def select_from_group(main_group_type, group)
     puts "Type the number of the #{main_group_type} from which you would like to select"
     input = gets.strip.downcase
+    drinks = []
     drinks = Cocktail.find_by_group(main_group_type, group[input.to_i-1].name.gsub(" ","_"))
     if drinks.length == 0
       CocktailAPI.getDrinksByGroup(main_group_type, group[input.to_i-1].name.gsub(" ","_"))

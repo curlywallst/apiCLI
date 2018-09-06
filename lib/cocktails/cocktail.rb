@@ -1,5 +1,5 @@
 class Cocktail
-  attr_accessor :name, :drink_id, :category, :alcoholic, :glass, :instructions, :ingredients, :measures
+  attr_accessor :name, :drink_id, :category, :alcoholic, :glass, :instructions, :ingredients, :ingredient, :measures
 
   @@all = []
 
@@ -17,19 +17,21 @@ class Cocktail
     @@all
   end
 
-  def self.find_by_category(category)
-    self.all.select { |drink| drink.category == category}
-  end
-
-  def self.find_by_glass(glass)
-    self.all.select { |drink| drink.glass == glass}
-  end
+  # def self.find_by_category(category)
+  #   self.all.select { |drink| drink.category == category}
+  # end
+  #
+  # def self.find_by_glass(glass)
+  #   self.all.select { |drink| drink.glass == glass}
+  # end
 
   def self.find_by_group(group, value)
     if group == "category"
       self.all.select { |drink| drink.category == value}
     elsif group == "glass"
       self.all.select { |drink| drink.glass == value}
+    elsif group == "ingredient"
+      self.all.select {|drink| drink.ingredient == value}
     end
   end
 
