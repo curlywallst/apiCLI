@@ -8,7 +8,7 @@ class CLI
     input = ""
     while input.downcase != "exit" do
       puts ""
-      puts "Type 'category' to select by a category of drinks, 'glass' to select by a type of glass, 'ingredient' to select by an ingredient....., or 'exit' to exit."
+      puts "Type 'category' to select by a category of drinks, 'glass' to select by a type of glass, 'ingredient' to select by an ingredient, 'alcoholic' to select whether or not it contains alcohol or 'exit' to exit."
       puts ""
       input = gets.strip.downcase
       if input == "category"
@@ -23,6 +23,10 @@ class CLI
         CocktailAPI.getIngredients if Ingredient.all == []
         print_selection(Ingredient.all)
         select_from_group("ingredient", Ingredient.all)
+      elsif input == "alcoholic"
+        CocktailAPI.getAlcoholic if Alcoholic.all == []
+        print_selection(Alcoholic.all)
+        select_from_group("alcoholic", Alcoholic.all)
       end
     end
   end

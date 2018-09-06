@@ -17,14 +17,6 @@ class Cocktail
     @@all
   end
 
-  # def self.find_by_category(category)
-  #   self.all.select { |drink| drink.category == category}
-  # end
-  #
-  # def self.find_by_glass(glass)
-  #   self.all.select { |drink| drink.glass == glass}
-  # end
-
   def self.find_by_group(group, value)
     if group == "category"
       self.all.select { |drink| drink.category == value}
@@ -32,6 +24,8 @@ class Cocktail
       self.all.select { |drink| drink.glass == value}
     elsif group == "ingredient"
       self.all.select {|drink| drink.ingredient == value}
+    elsif group == "alcoholic"
+      self.all.select {|drink| drink.alcoholic == value}
     end
   end
 

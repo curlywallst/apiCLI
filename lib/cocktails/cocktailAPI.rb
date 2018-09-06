@@ -26,6 +26,15 @@ class CocktailAPI
     end
   end
 
+  def self.getAlcoholic
+    url = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?a=list'
+    uri = URI(url)
+    response = Net::HTTP.get(uri)
+    categories = JSON.parse(response)["drinks"].each do |c|
+      Alcoholic.new(name: c["strAlcoholic"])  if c["strAlcoholic"] != nil
+    end
+  end
+
   def self.getDrinksByGroup(group, group_type)
     url = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?#{group[0]}=#{group_type}"
     uri = URI(url)
