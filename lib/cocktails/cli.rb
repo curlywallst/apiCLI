@@ -8,19 +8,19 @@ class CLI
       puts ""
       input = gets.strip.downcase
       if input == "category"
-        CocktailAPI.getCategories if Category.all == []
+        CocktailAPI.getGroup(Category, "Category") if Category.all == []
         print_selection(Category.all)
         select_from_group("category", Category.all)
       elsif input == "glass"
-        CocktailAPI.getGlasses if Glass.all == []
+        CocktailAPI.getGroup(Glass, "Glass") if Glass.all == []
         print_selection(Glass.all)
         select_from_group("glass", Glass.all)
       elsif input == "ingredient"
-        CocktailAPI.getIngredients if Ingredient.all == []
+        CocktailAPI.getGroup(Ingredient, "Ingredient1") if Ingredient.all == []
         print_selection(Ingredient.all)
         select_from_group("ingredient", Ingredient.all)
       elsif input == "alcohol"
-        CocktailAPI.getAlcoholic if Alcoholic.all == []
+        CocktailAPI.getGroup(Alcoholic, "Alcoholic") if Alcoholic.all == []
         print_selection(Alcoholic.all)
         select_from_group("alcoholic", Alcoholic.all)
       end

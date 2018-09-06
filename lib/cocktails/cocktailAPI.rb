@@ -1,37 +1,10 @@
 class CocktailAPI
-  def self.getCategories
-    url = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list'
+  def self.getGroup(group, group_name)
+    url = "https://www.thecocktaildb.com/api/json/v1/1/list.php?#{group_name[0].downcase}=list"
     uri = URI(url)
     response = Net::HTTP.get(uri)
-    categories = JSON.parse(response)["drinks"].each do |c|
-      Category.new(name: c["strCategory"])
-    end
-  end
-
-  def self.getGlasses
-    url = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?g=list'
-    uri = URI(url)
-    response = Net::HTTP.get(uri)
-    categories = JSON.parse(response)["drinks"].each do |c|
-      Glass.new(name: c["strGlass"])
-    end
-  end
-
-  def self.getIngredients
-    url = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?i=list'
-    uri = URI(url)
-    response = Net::HTTP.get(uri)
-    categories = JSON.parse(response)["drinks"].each do |c|
-      Ingredient.new(name: c["strIngredient1"])
-    end
-  end
-
-  def self.getAlcoholic
-    url = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?a=list'
-    uri = URI(url)
-    response = Net::HTTP.get(uri)
-    categories = JSON.parse(response)["drinks"].each do |c|
-      Alcoholic.new(name: c["strAlcoholic"])  if c["strAlcoholic"] != nil
+    group_members = JSON.parse(response)["drinks"].each do |c|
+      group.new(name: c["str#{group_name}"]) if c["str#{group_name}"] != nil
     end
   end
 
