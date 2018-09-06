@@ -1,14 +1,10 @@
 class CLI
 
-  def call
-    menu
-  end
-
   def menu
     input = ""
     while input.downcase != "exit" do
       puts ""
-      puts "Type 'category' to select by a category of drinks, 'glass' to select by a type of glass, 'ingredient' to select by an ingredient, 'alcoholic' to select whether or not it contains alcohol or 'exit' to exit."
+      puts "Type ".colorize(:blue) + "'category'".colorize(:green) + " to select by a category of drinks, ".colorize(:blue) + "'glass'".colorize(:green) + " to select by a type of glass, ".colorize(:blue) + "'ingredient'".colorize(:green) + " to select by an ingredient, ".colorize(:blue) + "'alcohol'".colorize(:green) + " to select whether or not it contains alcohol or ".colorize(:blue) + "'exit'".colorize(:green) + " to exit.".colorize(:blue)
       puts ""
       input = gets.strip.downcase
       if input == "category"
@@ -23,7 +19,7 @@ class CLI
         CocktailAPI.getIngredients if Ingredient.all == []
         print_selection(Ingredient.all)
         select_from_group("ingredient", Ingredient.all)
-      elsif input == "alcoholic"
+      elsif input == "alcohol"
         CocktailAPI.getAlcoholic if Alcoholic.all == []
         print_selection(Alcoholic.all)
         select_from_group("alcoholic", Alcoholic.all)
@@ -32,7 +28,7 @@ class CLI
   end
 
   def select_from_group(main_group_type, group)
-    puts "Type the number of the #{main_group_type} from which you would like to select"
+    puts "Type the number of the #{main_group_type} from which you would like to select".colorize(:blue)
     input = gets.strip.downcase
     drinks = []
     drinks = Cocktail.find_by_group(main_group_type, group[input.to_i-1].name.gsub(" ","_"))
@@ -42,7 +38,7 @@ class CLI
     end
     print_drinks_in_group(drinks)
     while input != "menu"
-      puts "Type the number of the drink you would like to see, 'list' to see the list again or 'menu' to return to the main menu."
+      puts "Type the number of the drink you would like to see, 'list' to see the list again or 'menu' to return to the main menu.".colorize(:blue)
       puts ""
       input = gets.strip
       if input == 'list'
@@ -56,7 +52,7 @@ class CLI
         print_drink(drink)
         puts ""
       elsif input != 'menu'
-        puts "Oops, I didn't understand that"        # puts "Type the number of the drink you would like to see, 'list' to see the list again or 'menu' to return to the main menu."
+        puts "Oops, I didn't understand that"
       end
     end
   end
@@ -88,7 +84,7 @@ class CLI
     puts "Ingredients:"
     puts ""
     drink.ingredients.each_with_index do |ingredient, index|
-      puts "#{ingredient} - #{drink.measures[index]}"
+      puts "#{ingredient} - #{drink.measures[index]}".colorize(:red)
     end
     puts ""
   end
